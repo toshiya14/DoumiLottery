@@ -22,9 +22,10 @@ namespace DoumiLottery
     public partial class MainWindow :Window
     {
         DispatcherTimer timer;
-        
-        Task t_Reading, t_Writing;
+
+        public static Task t_Reading;
         public static bool switcher;
+        public static string outFileName;
 
         void SetResult(IEnumerable<KeyValuePair<string, string>> resultSet) {
             var sb = new StringBuilder();
@@ -52,6 +53,8 @@ namespace DoumiLottery
             } else {
                 Switcher.Content = "開 Start !!";
             }
+
+            outFileName = DateTime.UtcNow.AddHours(8).ToString("yyHHddHHmmssfff");
         }
 
         private void Timer_Tick(object sender, EventArgs e) {
@@ -85,7 +88,7 @@ namespace DoumiLottery
             } else {
                 Switcher.Content = "開 Start !!";
                 DebugText.Text = "結果已產生...寫入文件...";
-                await Core.WriteResult(@"./out.txt");
+                await Core.WriteResult($@"./{outFileName}.txt");
                 Core.Remove(GetKeys(Core.results));
                 DebugText.Text = "結果已產生...寫入完成...";
             }

@@ -59,11 +59,12 @@ namespace DoumiLottery
 
         public static void Draw(int count) {
             Core.results.Clear();
-            var _samples = new List<string>();
             string[] result;
-            _samples.AddRange(Core.samples);
-            Shuffle(_samples, random.Next(0, 1000000));
-            result = _samples.Take(count).ToArray();
+            var _sample = new List<string>();
+            _sample.AddRange(samples);
+
+            Shuffle(_sample, random.Next(10000, 99999));
+            result = _sample.Take(count).ToArray();
             foreach (var i in result) {
                 Core.results.Add(Mask(i));
             }
