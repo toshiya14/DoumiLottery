@@ -49,8 +49,10 @@ namespace DoumiLottery
         public static async Task WriteResult(string filename) {
             var fs = new FileStream(filename, FileMode.Append);
             using (var writer = new StreamWriter(fs)) {
+                await writer.WriteLineAsync("=====================================================");
+                await writer.WriteLineAsync($"生成时间： {DateTime.UtcNow.AddHours(8)}");
                 foreach (var i in results) {
-                    await writer.WriteLineAsync($"{DateTime.UtcNow.AddHours(8).ToString()} {i.Key}");
+                    await writer.WriteLineAsync($"{i.Key}");
                 }
             }
         }
@@ -82,7 +84,7 @@ namespace DoumiLottery
             Core.samples.Remove(value);
         }
 
-        public static void Remove(ICollection<string> value) {
+        public static void Remove(IEnumerable<string> value) {
             foreach (var i in value) {
                 Core.samples.Remove(i);
             }

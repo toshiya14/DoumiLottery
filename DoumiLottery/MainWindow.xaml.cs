@@ -29,7 +29,7 @@ namespace DoumiLottery
         void SetResult(IEnumerable<KeyValuePair<string, string>> resultSet) {
             var sb = new StringBuilder();
             foreach (var i in resultSet) {
-                sb.Append(i.Value + " ");
+                sb.Append(i.Value + "　");
             }
             ResultText.Text = sb.ToString();
         }
@@ -48,13 +48,13 @@ namespace DoumiLottery
 
             // Initialize Switcher
             if (switcher) {
-                Switcher.Content = "停 Stop ！";
+                Switcher.Content = "停 Stop !!";
             } else {
-                Switcher.Content = "开 Start ！";
+                Switcher.Content = "開 Start !!";
             }
         }
 
-        private async void Timer_Tick(object sender, EventArgs e) {
+        private void Timer_Tick(object sender, EventArgs e) {
             if (!t_Reading.IsCompleted) {
                 return;
             }
@@ -62,26 +62,32 @@ namespace DoumiLottery
                 DebugText.Text = "抽取中...";
                 Core.Draw(2);
                 SetResult(Core.results);
-            } else {
-                DebugText.Text = "结果已产生...写入文件...";
-                await Core.WriteResult(@"./out.txt");
-                DebugText.Text = "结果已产生...写入完成...";
+            }
+        }
+
+        private IEnumerable<string> GetKeys(IEnumerable<KeyValuePair<string, string>> items) {
+            foreach (var i in items) {
+                yield return i.Key;
             }
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e) {
             switcher = true;
             timer.Start();
-            DebugText.Text = "正在读取样本列表...";
+            DebugText.Text = "讀取樣本數據...";
             t_Reading = Core.ReadSamplesFromFile(@"./samples.txt");
         }
 
-        private void Switcher_Click(object sender, RoutedEventArgs e) {
+        private async void Switcher_Click(object sender, RoutedEventArgs e) {
             switcher = !switcher;
             if (switcher) {
-                Switcher.Content = "停 Stop ！";
+                Switcher.Content = "停 Stop !!";
             } else {
-                Switcher.Content = "开 Start ！";
+                Switcher.Content = "開 Start !!";
+                DebugText.Text = "結果已產生...寫入文件...";
+                await Core.WriteResult(@"./out.txt");
+                Core.Remove(GetKeys(Core.results));
+                DebugText.Text = "結果已產生...寫入完成...";
             }
         }
 
