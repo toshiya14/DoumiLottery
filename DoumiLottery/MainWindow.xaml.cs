@@ -21,11 +21,18 @@ namespace DoumiLottery
     /// </summary>
     public partial class MainWindow :Window
     {
-
-
         DispatcherTimer timer;
-        string status;
+        
         Task t_Reading, t_Writing;
+        public static bool switcher;
+
+        void SetResult(IEnumerable<KeyValuePair<string, string>> resultSet) {
+            var sb = new StringBuilder();
+            foreach (var i in resultSet) {
+                sb.Append(i.Value + " ");
+            }
+            ResultText.Text = sb.ToString();
+        }
 
         bool IsReadingCompleted {
             get => Core.IsFinishedReading;
@@ -36,30 +43,50 @@ namespace DoumiLottery
 
             // Initialize Timer
             timer = new DispatcherTimer();
-            timer.Interval = new TimeSpan(0, 0, 0, 0, 200);
+            timer.Interval = new TimeSpan(0, 0, 0, 0, 20);
             timer.Tick += Timer_Tick;
+
+            // Initialize Switcher
+            if (switcher) {
+                Switcher.Content = "停 Stop ！";
+            } else {
+                Switcher.Content = "开 Start ！";
+            }
         }
 
-        private void Timer_Tick(object sender, EventArgs e) {
-            if (!IsReadingCompleted) {
+        private async void Timer_Tick(object sender, EventArgs e) {
+            if (!t_Reading.IsCompleted) {
                 return;
+            }
+            if (switcher) {
+                DebugText.Text = "抽取中...";
+                Core.Draw(2);
+                SetResult(Core.results);
+            } else {
+                DebugText.Text = "结果已产生...写入文件...";
+                await Core.WriteResult(@"./out.txt");
+                DebugText.Text = "结果已产生...写入完成...";
             }
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e) {
+            switcher = true;
             timer.Start();
-            status = "正在读取样本列表...";
+            DebugText.Text = "正在读取样本列表...";
             t_Reading = Core.ReadSamplesFromFile(@"./samples.txt");
         }
 
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e) {
-            status = "等待结果写入完毕...";
-            if (t_Writing != null) {
-                while (!t_Writing.IsCompleted) {
-                    Task.Delay(100);
-                }
+        private void Switcher_Click(object sender, RoutedEventArgs e) {
+            switcher = !switcher;
+            if (switcher) {
+                Switcher.Content = "停 Stop ！";
+            } else {
+                Switcher.Content = "开 Start ！";
             }
-            status = "正常退出";
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e) {
+            DebugText.Text = "正常退出";
         }
     }
 }

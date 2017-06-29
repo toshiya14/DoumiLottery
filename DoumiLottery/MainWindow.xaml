@@ -8,9 +8,15 @@
         Title="MainWindow" Height="720" Width="1280" Loaded="Window_Loaded" Closing="Window_Closing">
     <Grid Background="#FFE7C337">
         <Viewbox>
-            <Grid Width="1260" Height="700" Margin="10">
-                <StackPanel></StackPanel>
-                <TextBlock FontFamily="./Resources/#saxMono" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="5">Opensourced https://github.com/toshiya14/DoumiLottery © Toshiya</TextBlock>
+            <Grid Width="1270" Height="710" Margin="5">
+                <StackPanel Margin="0,50,0,30">
+                    <Image Height="200" Source="Resources/logo.jpg"/>
+                    <TextBlock FontFamily="./Resources/#雅坊美工14" HorizontalAlignment="Center" FontSize="48">斗米兼職 潮兼職 抽獎</TextBlock>
+                    <TextBlock FontFamily="./Resources/#Unispace" x:Name="ResultText" HorizontalAlignment="Center" FontSize="64" Margin="0,40,0,60">234+-()4323 857$%^#4032</TextBlock>
+                    <Button FontFamily="./Resources/#雅坊美工14" x:Name="Switcher" FontSize="32" Content="Dummy" Height="80" Width="400" Background="{x:Null}" BorderBrush="Black" Click="Switcher_Click"></Button>
+                </StackPanel>
+                <TextBlock FontFamily="./Resources/#雅坊美工14" Margin="5" FontWeight="Bold" x:Name="DebugText" Text="{Binding Status}" HorizontalAlignment="Left" VerticalAlignment="Bottom" ></TextBlock>
+                <TextBlock FontFamily="./Resources/#saxMono" FontSize="14" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="5" FontWeight="Bold">Opensourced https://github.com/toshiya14/DoumiLottery © Toshiya</TextBlock>
             </Grid>
         </Viewbox>
     </Grid>
